@@ -1,4 +1,6 @@
-FROM continuumio:anaconda3
+FROM debian:jessie
+
+MAINTAINER Ben Rowland "browland@partners.org"
 
 # set up neurodebian package repositories
 RUN echo 'deb http://neuro.debian.net/debian jessie main' > /etc/apt/sources.list.d/neurodebian.sources.list

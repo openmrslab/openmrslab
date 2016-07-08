@@ -33,3 +33,5 @@ RUN pip install https://github.com/darcymason/pydicom/archive/master.zip
 
 RUN git clone https://github.com/openmrslab/suspect.git /home/jovyan/suspect && \
     pip install /home/jovyan/suspect
+
+ADD ./examples /home/jovyan/work/examples

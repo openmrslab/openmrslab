@@ -42,7 +42,7 @@ RUN pip install https://github.com/nipy/nipype/archive/master.zip
 RUN pip install https://github.com/darcymason/pydicom/archive/master.zip
 
 RUN git clone https://github.com/openmrslab/suspect.git /home/jovyan/suspect && \
-    pip install suspect==0.1 #/home/jovyan/suspect
+    pip install suspect==0.2
 
 RUN /bin/bash -c "source activate python2 && pip install pygamma"
 

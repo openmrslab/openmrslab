@@ -35,6 +35,10 @@ RUN cmake -D CMAKE_BUILD_TYPE=Release /opt/niftyreg-src && \
     make && \
     make install
 
+# install dev version of nipype to include niftyreg
+WORKDIR /opt
+RUN git clone https://github.com/nipy/nipype.git
+
 # install tarquin
 RUN wget --quiet https://sourceforge.net/projects/tarquin/files/TARQUIN_4.3.10/TARQUIN_Linux_4.3.10.tar.gz/download -O /tmp/tarquin.tar.gz && \
     mkdir /etc/tarquin && \
@@ -54,7 +58,8 @@ WORKDIR /home/jovyan/work
 #RUN pip install nibabel traits nose future simplejson lxml prov pbr mock xvfbwrapper
 RUN pip install pyx
 
-RUN pip install https://github.com/nipy/nipype/archive/master.zip
+#RUN pip install https://github.com/nipy/nipype/archive/master.zip
+RUN pip install /opt/nipype
 
 RUN pip install https://github.com/darcymason/pydicom/archive/master.zip
 

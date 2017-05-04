@@ -21,6 +21,21 @@ ENV FSLOUTPUTTYPE=NIFTI_GZ
 ENV PATH=$PATH:/usr/lib/fsl/5.0
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/fsl/5.0
 
+# install niftyreg
+RUN apt-get update \
+    && apt-get -y install cmake
+
+RUN mkdir /opt/niftyreg-src && \
+    mkdir /opt/niftyreg-build && \
+    git clone git://git.code.sf.net/p/niftyreg/git /opt/niftyreg-src
+
+WORKDIR /opt/niftyreg-build
+
+RUN cmake -D CMAKE_BUILD_TYPE=Release /opt/niftyreg-src && \
+    make && \
+    make install
+
+# install tarquin
 RUN wget --quiet https://sourceforge.net/projects/tarquin/files/TARQUIN_4.3.10/TARQUIN_Linux_4.3.10.tar.gz/download -O /tmp/tarquin.tar.gz && \
     mkdir /etc/tarquin && \
     tar -zxvf /tmp/tarquin.tar.gz -C /etc/tarquin --strip-components=1
@@ -34,8 +49,10 @@ COPY ./examples /home/$NB_USER/work/examples/
 RUN chown $NB_USER -R /home/$NB_USER/work/examples/
 
 USER $NB_USER
+WORKDIR /home/jovyan/work
 
 #RUN pip install nibabel traits nose future simplejson lxml prov pbr mock xvfbwrapper
+RUN pip install pyx
 
 RUN pip install https://github.com/nipy/nipype/archive/master.zip
 

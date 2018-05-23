@@ -1,13 +1,11 @@
-FROM jupyter/scipy-notebook
+FROM jupyter/scipy-notebook:4ebeb1f2d154
 
 MAINTAINER Ben Rowland "browland@partners.org"
 
 USER root
 
-# set up neurodebian package repositories
-RUN echo 'deb http://neuro.debian.net/debian jessie main contrib non-free' > /etc/apt/sources.list.d/neurodebian.sources.list
-RUN echo 'deb http://neuro.debian.net/debian data main contrib non-free' >> /etc/apt/sources.list.d/neurodebian.sources.list
-RUN apt-key adv --recv-keys --keyserver pgp.mit.edu 0xA5D32F012649A5A9
+RUN apt-get update \
+    && apt-get install -y neurodebian-archive-keyring
 
 # install fsl
 RUN apt-get update \
@@ -27,17 +25,18 @@ RUN apt-get update \
 
 RUN mkdir /opt/niftyreg-src && \
     mkdir /opt/niftyreg-build && \
-    git clone git://git.code.sf.net/p/niftyreg/git /opt/niftyreg-src
+    git clone https://cmiclab.cs.ucl.ac.uk/mmodat/niftyreg.git /opt/niftyreg-src
 
 WORKDIR /opt/niftyreg-build
 
-RUN cmake -D CMAKE_BUILD_TYPE=Release /opt/niftyreg-src && \
+RUN PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && \
+    cmake -D CMAKE_BUILD_TYPE=Release /opt/niftyreg-src && \
     make && \
-    make install
+    make install && \
+    PATH=/opt/conda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/fsl/5.0
 
 # install dev version of nipype to include niftyreg
-WORKDIR /opt
-RUN git clone https://github.com/nipy/nipype.git
+#RUN git clone https://github.com/nipy/nipype.git /opt/nipype
 
 # install tarquin
 RUN wget --quiet https://sourceforge.net/projects/tarquin/files/TARQUIN_4.3.10/TARQUIN_Linux_4.3.10.tar.gz/download -O /tmp/tarquin.tar.gz && \
@@ -56,16 +55,29 @@ USER $NB_USER
 WORKDIR /home/jovyan/work
 
 #RUN pip install nibabel traits nose future simplejson lxml prov pbr mock xvfbwrapper
-RUN pip install pyx
+RUN conda update -n base conda && \
+    pip install --upgrade pip && \
+    pip install pyx nipype pydicom
 
 #RUN pip install https://github.com/nipy/nipype/archive/master.zip
-RUN pip install /opt/nipype
+#RUN pip install /opt/nipype
 
-RUN pip install https://github.com/darcymason/pydicom/archive/master.zip
+#RUN pip install https://github.com/darcymason/pydicom/archive/master.zip
 
 RUN git clone https://github.com/openmrslab/suspect.git /home/jovyan/suspect && \
-    pip install suspect==0.3
+    pip install suspect==0.3.8
 
+RUN conda create --quiet --yes -p $CONDA_DIR/envs/python2 python=2.7 ipython ipykernel kernda && \
+    conda clean -tipsy
+
+USER root
+
+# Create a global kernelspec in the image and modify it so that it properly activates
+# the python2 conda environment.
+RUN $CONDA_DIR/envs/python2/bin/python -m ipykernel install && \
+    $CONDA_DIR/envs/python2/bin/kernda -o -y /usr/local/share/jupyter/kernels/python2/kernel.json
+
+USER $NB_USER
 RUN /bin/bash -c "source activate python2 && pip install pygamma"
 
 

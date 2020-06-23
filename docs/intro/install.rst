@@ -18,7 +18,8 @@ Windows
 *******
 #. Download and install Docker Desktop for Windows.
     * Download link: https://www.docker.com/products/docker-desktop
-    * Installation guide: https://docs.docker.com/docker-for-windows/install/
+    * Installation guide for Windows 10 Pro, Enterprise, and Education: https://docs.docker.com/docker-for-windows/install/
+    * Installation guide for Windows 10 Home: https://docs.docker.com/docker-for-windows/install-windows-home/
 
 Linux
 *****

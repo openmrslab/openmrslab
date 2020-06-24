@@ -49,11 +49,11 @@ WORKDIR /home/jovyan/work
 
 RUN conda update -n base conda && \
     pip install --upgrade pip && \
-    pip install pyx nipype pydicom
+    pip install pyx nipype pydicom pylcmodel==0.3.3
 
 
 RUN git clone https://github.com/openmrslab/suspect.git /home/jovyan/suspect && \
-    pip install suspect==0.4.0
+    pip install suspect==0.4.1
 
 # we create a Python2 environment which is necessary for pygamma
 RUN conda create --quiet --yes -p $CONDA_DIR/envs/python2 python=2.7 ipython ipykernel kernda && \

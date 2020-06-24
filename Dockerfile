@@ -10,6 +10,11 @@ USER root
 RUN apt-get update \
     && apt-get install -y cmake gnupg2 libxml2-dev libxslt1-dev
 
+# this seems to be important to prevent adding the key (below) failing sometimes
+# https://github.com/f-secure-foundry/usbarmory-debian-base_image/issues/9#issuecomment-451635505
+RUN mkdir ~/.gnupg
+RUN echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf
+
 RUN wget -O- http://neuro.debian.net/lists/bionic.de-m.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list && \
     sudo apt-key adv --recv-keys --keyserver hkp://pool.sks-keyservers.net:80 0xA5D32F012649A5A9
 
@@ -56,7 +61,7 @@ RUN git clone https://github.com/openmrslab/suspect.git /home/jovyan/suspect && 
     pip install suspect==0.4.1
 
 # we create a Python2 environment which is necessary for pygamma
-RUN conda create --quiet --yes -p $CONDA_DIR/envs/python2 python=2.7 ipython ipykernel kernda && \
+RUN conda create --quiet --yes -p $CONDA_DIR/envs/python2 python=2.7 ipython ipykernel kernda backports.functools_lru_cache && \
     conda clean -tipsy
 USER root
 # Create a global kernelspec in the image and modify it so that it properly activates

@@ -17,7 +17,7 @@ Step 2. Clone your fork
 #. On the GitHub page of your fork, click the green **Clone** button.
 #. Copy the displayed URL.
 #. Open Terminal and *cd* into the repository where you would like to clone your fork.
-#. Enter the command: ``git clone [URL]``, where **[URL]** is the URL you copied in the previous step.
+#. Enter the command: ``git clone [URL]``, where **[URL]** is the URL you copied in the step 3.
 
 ######################################
 Step 3. Push code changes to your fork

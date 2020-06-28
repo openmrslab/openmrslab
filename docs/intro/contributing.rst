@@ -13,7 +13,7 @@ Step 1. Fork and clone repository from GitHub
 #######################
 Step 2. Clone your fork
 #######################
-#. Ensure `git<https://git-scm.com/>`_ is installed on your computer.
+#. Ensure `git <https://git-scm.com/>`_ is installed on your computer.
 #. On the GitHub page of your fork, click the green **Clone** button.
 #. Copy the displayed URL.
 #. Open Terminal and *cd* into the repository where you would like to clone your fork.

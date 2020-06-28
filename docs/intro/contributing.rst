@@ -33,6 +33,6 @@ Step 3. Push code changes to your fork
 Step 4. Create pull request to from your fork to the original OpenMRSLab repository
 ###################################################################################
 #. Go to the GitHub page of your fork.
-#. In the banner with the message "This branch is n commit ahead of openmrslab:master," click on the **Pull request** button.
+#. In the banner with the message "This branch is n commits ahead of openmrslab:master," click on the **Pull request** button.
 #. Click on the green **Create pull request** button.
 #. The maintainers of OpenMRSLab will review your pull request. If changes are required, repeat Step 3. Once the pull request is approved, you may merge your pull request.

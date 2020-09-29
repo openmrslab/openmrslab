@@ -78,3 +78,19 @@ Solving specific problems
 
 :doc:`topics/pfiles`
     How to enable support for GE P-files.
+
+All the rest
+============
+
+.. toctree::
+   :caption: All the rest
+   :hidden:
+
+   news
+   topics/contributing
+
+:doc:`news`
+    See what has changed in recent OpenMRSLab versions.
+
+:doc:`topics/contributing`
+    Learn how to contribute to the OpenMRSLab project.

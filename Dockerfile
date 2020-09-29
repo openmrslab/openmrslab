@@ -1,4 +1,4 @@
-FROM jupyter/scipy-notebook:619e9cc2fc07
+FROM jupyter/scipy-notebook:150731d32f85
 
 MAINTAINER Ben Rowland "bennyrowland@mac.com"
 
@@ -29,9 +29,14 @@ ENV FSLOUTPUTTYPE=NIFTI_GZ
 ENV PATH=$PATH:/usr/lib/fsl/5.0
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/fsl/5.0
 
+RUN apt-get install -y gcc-8 g++-8 \
+    && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 8 \
+    && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 8
+
 RUN mkdir /opt/niftyreg-src && \
     mkdir /opt/niftyreg-build && \
-    git clone https://cmiclab.cs.ucl.ac.uk/mmodat/niftyreg.git /opt/niftyreg-src
+    git clone https://github.com/KCL-BMEIS/niftyreg.git /opt/niftyreg-src
+    #git clone https://cmiclab.cs.ucl.ac.uk/mmodat/niftyreg.git /opt/niftyreg-src
 WORKDIR /opt/niftyreg-build
 RUN PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && \
     cmake -D CMAKE_BUILD_TYPE=Release /opt/niftyreg-src && \
@@ -49,6 +54,14 @@ ENV PATH /etc/tarquin:$PATH
 COPY ./examples /home/$NB_USER/work/examples/
 RUN chown $NB_USER -R /home/$NB_USER/work/examples/
 
+RUN wget -qO- https://www.openssl.org/source/old/1.0.2/openssl-1.0.2u.tar.gz \
+  | tar -xvz -C /home/$NB_USER \
+  && cd /home/$NB_USER/openssl-1.0.2u \
+  && ./Configure shared no-ssl2 --prefix=/usr/local/my_ssl --openssldir=/usr/local/my_ssl linux-x86_64 \
+  && make && make test && make install \
+  && ln -s /usr/local/my_ssl/lib/libcrypto.so.1.0.0 /lib/x86_64-linux-gnu/libcrypto.so.10\
+  && ln -s /usr/local/my_ssl/lib/libssl.so.1.0.0 /lib/x86_64-linux-gnu/libssl.so.10
+
 USER $NB_USER
 WORKDIR /home/jovyan/work
 
@@ -58,7 +71,9 @@ RUN conda update -n base conda && \
 
 
 RUN git clone https://github.com/openmrslab/suspect.git /home/jovyan/suspect && \
-    pip install suspect==0.4.1
+    pip install suspect==0.4.3
+
+ENV PYTHONPATH=/home/$NB_USER/work/orchestra
 
 # we create a Python2 environment which is necessary for pygamma
 RUN conda create --quiet --yes -p $CONDA_DIR/envs/python2 python=2.7 ipython ipykernel kernda backports.functools_lru_cache && \
